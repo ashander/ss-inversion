@@ -83,3 +83,4 @@ for(t in 2:numYears){
 deltad[count]=(Ntotd[numYears]-Ntotd[numYears-1])/Ntot[numYears]
 }
 plot(ratioK,type="line",deltad,main="change in proportion of d",xlab="ratio of KD:KE",ylab="Deltad")
+abline(h=0)
