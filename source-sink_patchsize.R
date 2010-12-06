@@ -19,64 +19,89 @@
 
 source('source-sink.R')
 
-numYears=5
+numYears=100
 
 ###################
 
 #Parameters:
 size = list(E=1000,D=200)
-lambda = list(Ee=1.5, Ed=.7, De=.9, Dd=4.93)
+lamEe = 1.5
+lambda = list(Ee=lamEe, Ed=.7, De=.9, Dd=NA)
 
 #For initializing: give intial ratio of e to d, plus the number of individuals in ND and NE
 initdToTot=.1          #initial d to total ratio
 
 ########################
 #########################
+
 #Actual code:
 count=1
 bins=1000
 deltad=numeric(bins)
-vectorKD=seq(.01*size$E,100*size$E,length.out=bins)
+eggratio=numeric(bins)
+vectorKD=seq(.01*size$E,5*size$E,length.out=bins)
 ratioK=vectorKD/size$E
-for(count in 1:bins){
-	size$D=vectorKD[count]	
-	#cat(KD)
-	initTotPop=size$E+size$D    #total size of combined populations
+lamMul= c(.9, 1.0, 1.1)
 
-	#creating vectors
-	Ntotd=numeric(numYears)
-	Ntote=Ntotd
-	Ntot=Ntotd
-	NDd=Ntotd
-	NDe=Ntotd
-	NEd=Ntotd
-	NEe=Ntotd
-	#initializing vectors
-	Ntotd[1]=initdToTot*(initTotPop)
-	Ntote[1]=(1-initdToTot)*(initTotPop)
-	Ntot=initTotPop
-	INIT = Disp(Ntotd[1], Ntote[1], K=size)
-	NDd[1]=INIT[1]
-	NDe[1]=INIT[2]
-	NEd[1]=INIT[3]
-	NEe[1]=INIT[4]
-	#############
-	#first year is 
+plot(0,0,pch='',xlim=c(0,max(ratioK)),ylim=c(0,2.5), main="",xlab=expression(K[D]/K[E]),ylab=expression(eta[D/E]))
+for(i in 1:3){
+	lambda$Dd = lamEe*lamMul[i]
+	for(count in 1:bins){
+		size$D=vectorKD[count]	
+		#cat(KD)
+		initTotPop=size$E+size$D    #total size of combined populations
 
+		#creating vectors
+		Ntotd=numeric(numYears)
+		Ntote=Ntotd
+		Ntot=Ntotd
+		NDd=Ntotd
+		NDe=Ntotd
+		NEd=Ntotd
+		NEe=Ntotd
+		
+		#number of eggs per each
+		NEeggs = Ntotd
+		NDeggs = Ntotd
 
-	for(t in 2:numYears){
-		TMP= Repro(NDd[t-1], NDe[t-1], NEd[t-1], NEe[t-1], L=lambda)
-		Ntotd[t]=TMP[1]
-		Ntote[t]=TMP[2]
-		cat(TMP,'\n')
-		Ntot[t]=Ntotd[t]+Ntote[t] #total number of individuals of any type
-		OUT = Disp(TMP[1],TMP[2],K=size)
-		NDd[t]=OUT[1]
-		NDe[t]=OUT[2]
-		NEd[t]=OUT[3]
-		NEe[t]=OUT[4]
+		#initializing vectors
+		Ntotd[1]=initdToTot*(initTotPop)
+		Ntote[1]=(1-initdToTot)*(initTotPop)
+		Ntot=initTotPop
+		INIT = Disp(Ntotd[1], Ntote[1], K=size)
+		NDd[1]=INIT[1]
+		NDe[1]=INIT[2]
+		NEd[1]=INIT[3]
+		NEe[1]=INIT[4]
+		#############
+	
+		for(t in 2:numYears){
+			# reproduciton
+			TMP= Repro(NDd[t-1], NDe[t-1], NEd[t-1], NEe[t-1], L=lambda)
+			Ntotd[t]=TMP[1]
+			Ntote[t]=TMP[2]
+			Ntot[t]=Ntotd[t]+Ntote[t] #total number of individuals of any type
+			
+			#dispersers produced?
+			TMP2 = Prod(NDd[t-1], NDe[t-1], NEd[t-1], NEe[t-1], L=lambda)
+			NDeggs[t] =TMP2[1]
+			NEeggs[t] =TMP2[2]	
+		
+			## dispersal	
+			OUT = Disp(TMP[1],TMP[2],K=size)
+			NDd[t]=OUT[1]
+			NDe[t]=OUT[2]
+			NEd[t]=OUT[3]
+			NEe[t]=OUT[4]
+		}
+		eggratio[count]=(NDeggs[numYears]/NEeggs[numYears]);
+		
+		deltad[count]=(Ntotd[numYears]-Ntotd[numYears-1])/Ntot[numYears]
 	}
-	deltad[count]=(Ntotd[numYears]-Ntotd[numYears-1])/Ntot[numYears]
-}
-plot(ratioK,type='l',deltad,main="change in proportion of d",xlab="ratio of KD:KE",ylab="Deltad")
-abline(h=0)
+
+	lines(ratioK, eggratio/ratioK, lty=i,lwd=2)
+	}
+legend(0.1,2.5, c(expression(lambda[Dd]/lambda[Ee]== 0.9),expression(lambda[Dd]/lambda[Ee]== 1.0), expression(lambda[Dd]/lambda[Ee]== 1.1)) , lty=1:3, lwd=2, cex=.8, bty='n')
+
+abline(h=1, lty=1,col='gray')
+abline(h=0,lty=1)

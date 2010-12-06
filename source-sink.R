@@ -15,6 +15,13 @@ Repro<-function(NDdIN, NDeIN, NEdIN, NEeIN, L=lambda){
 	return(c(NtotdOUT, NtoteOUT))
 	}
 
+Prod<-function(NDdIN, NDeIN, NEdIN, NEeIN, L=lambda){
+	# given nubmer of each genotype in each environment, find totals of each geno produced across all
+	NtotDOUT=NDdIN*lambda$Dd+NDeIN*lambda$De #finding the total number of eggs from D
+	NtotEOUT=NEeIN*lambda$Ee+NEdIN*lambda$Ed #finding the total number of eggs from E
+	return(c(NtotDOUT, NtotEOUT))
+	}
+
 Disp<-function(NtotdIN, NtoteIN, K=size){
 	# given total number of offspring of each genotype, define dispersal
 	NtotIN	= NtotdIN + NtoteIN

@@ -4,13 +4,14 @@
 
 source('source-sink.R')
 
-numYears=1000
+numYears=100
 
 ###################
 
 #Parameters:
 size = list(E=1000,D=200)
-lambda = list(Ee=1.5, Ed=.7, De=.9, Dd=4.93)
+lamEe = 1.5
+lambda = list(Ee=lamEe, Ed=.7, De=.9, Dd=1.1*lamEe)
 
 #For initializing: give intial ratio of e to d, plus the number of individuals in ND and NE
 initdToTot=.1          #initial d to total ratio
@@ -27,6 +28,12 @@ NDd=Ntotd
 NDe=Ntotd
 NEd=Ntotd
 NEe=Ntotd
+
+#number of eggs per each
+NEeggs = Ntotd
+NDeggs = Ntotd
+
+
 #initializing vectors
 Ntotd[1]=initdToTot*(initTotPop)
 Ntote[1]=(1-initdToTot)*(initTotPop)
@@ -40,11 +47,22 @@ NEe[1]=INIT[4]
 #############
 #first year is 
 
-
+plot(c(1,numYears),c(0,2),col="transparent",main="Inversion criterion",xlab="time",ylab=expression(eta[D/E]))
+lams =c(.5, 2.5, 3.4)
+for(i in 1:3){
+	lambda$Dd=lams[i]*lamEe
 for(t in 2:numYears){
 	TMP= Repro(NDd[t-1], NDe[t-1], NEd[t-1], NEe[t-1], L=lambda)
 	Ntotd[t]=TMP[1]
 	Ntote[t]=TMP[2]
+	
+	#dispersers produced?
+	TMP2 = Prod(NDd[t-1], NDe[t-1], NEd[t-1], NEe[t-1], L=lambda)
+	NDeggs[t] =TMP2[1]
+	NEeggs[t] =TMP2[2]		
+	Ntot[t]=Ntotd[t]+Ntote[t] #total number of individuals of any type
+
+	
 	Ntot[t]=Ntotd[t]+Ntote[t] #total number of individuals of any type
 	OUT = Disp(TMP[1],TMP[2],K=size)
 	NDd[t]=OUT[1]
@@ -52,15 +70,11 @@ for(t in 2:numYears){
 	NEd[t]=OUT[3]
 	NEe[t]=OUT[4]
 }
+	etaDE = NDeggs/NEeggs*1/(size$D/size$E)
+	etaDE = etaDE[2:length(etaDE)]
+	lines(2:numYears,etaDE, lty=i, lwd=2)
+}
+legend(10,2.0, c(expression(lambda[Dd]/lambda[Ee]== 0.5),expression(lambda[Dd]/lambda[Ee]== 2.5), expression(lambda[Dd]/lambda[Ee]== 3.4)) , lty=1:3, lwd=2, cex=.8, bty='n')
 
-par(mfrow=c(1,2))
-plot(c(1,numYears),c(0,Ntot[numYears]),col="transparent",main="Population sizes",xlab="time",ylab="Population size")
-legend(.7*numYears,.9*Ntot[numYears], c("Total Pop","e","d"), cex=0.6, col=c("black","green","brown"), lty=1);
-lines(1:numYears,Ntot,col="black")
-lines(1:numYears,Ntotd,col="brown")
-lines(1:numYears,Ntote,col="green")
-plot(c(1,numYears),c(0,1),main="Ratios of d and e",xlab="time",ylab="Proportion",col="transparent")
-legend(.55*numYears,.9, c("Proportion that is e","proportion that is d"), cex=0.6, col=c("green","brown"), lty=1);
-lines(1:numYears,Ntotd/Ntot,col="brown")
-lines(1:numYears,Ntote/Ntot,col="green")
-
+abline(h=1, lty=1,col='gray')
+abline(h=0,lty=1)
