@@ -15,22 +15,20 @@
 #seq(a,b,length.out=c)
 #produces a sequence of numbers from a to b, with a total of c numbers in the sequence.
 
+
+
+source('source-sink.R')
+
 numYears=5
 
 ###################
 
 #Parameters:
-KE=1000 #in numbers of individuals
-lambdaEe=1.5
-lambdaEd=.7
-lambdaDe=.9
-lambdaDd=4.93
+size = list(E=1000,D=200)
+lambda = list(Ee=1.5, Ed=.7, De=.9, Dd=4.93)
 
 #For initializing: give intial ratio of e to d, plus the number of individuals in ND and NE
 initdToTot=.1          #initial d to total ratio
-
-
-
 
 ########################
 #########################
@@ -38,12 +36,12 @@ initdToTot=.1          #initial d to total ratio
 count=1
 bins=1000
 deltad=numeric(bins)
-vectorKD=seq(.01*KE,100*KE,length.out=bins)
-ratioK=vectorKD/KE
+vectorKD=seq(.01*size$E,100*size$E,length.out=bins)
+ratioK=vectorKD/size$E
 for(count in 1:bins){
-	KD=vectorKD[count]	
-	cat(KD)
-	initTotPop=KE+KD    #total size of combined populations
+	size$D=vectorKD[count]	
+	#cat(KD)
+	initTotPop=size$E+size$D    #total size of combined populations
 
 	#creating vectors
 	Ntotd=numeric(numYears)
@@ -57,46 +55,26 @@ for(count in 1:bins){
 	Ntotd[1]=initdToTot*(initTotPop)
 	Ntote[1]=(1-initdToTot)*(initTotPop)
 	Ntot=initTotPop
-	if(initdToTot>.5){ #d is more than half the pop, D is the source, E is the sink
-			#cat("d is more common, D is the source\n")
-			NDd[1]=(Ntotd[1]/Ntot[1])*KD
-			NDe[1]=(Ntote[1]/Ntot[1])*KD
-			NEd[1]=(Ntotd[1]/Ntot[1])*min(KE,(Ntotd[1]+Ntote[1]-KD))
-			NEe[1]=(Ntote[1]/Ntot[1])*min(KE,(Ntotd[1]+Ntote[1]-KD))
-		}else{ #e is more than half the pop, E is the source
-			#cat("e is more common, E is the source\n")
-			NEd[1]=(Ntotd[1]/Ntot[1])*KE
-			NEe[1]=(Ntote[1]/Ntot[1])*KE
-			NDd[1]=(Ntotd[1]/Ntot[1])*min(KD,(Ntotd[1]+Ntote[1]-KE))
-			NDe[1]=(Ntote[1]/Ntot[1])*min(KD,(Ntotd[1]+Ntote[1]-KE))
-		}
+	INIT = Disp(Ntotd[1], Ntote[1], K=size)
+	NDd[1]=INIT[1]
+	NDe[1]=INIT[2]
+	NEd[1]=INIT[3]
+	NEe[1]=INIT[4]
 	#############
 	#first year is 
 
 
 	for(t in 2:numYears){
-		Ntotd[t]=NDd[t-1]*lambdaDd+NEd[t-1]*lambdaEd #finding the total number of d individuals produced this year
-		#cat(Ntotd[t])
-		Ntote[t]=NEe[t-1]*lambdaEe+NDe[t-1]*lambdaDe #ditto for e individuals
-		#cat(Ntote[t])
+		TMP= Repro(NDd[t-1], NDe[t-1], NEd[t-1], NEe[t-1], L=lambda)
+		Ntotd[t]=TMP[1]
+		Ntote[t]=TMP[2]
+		cat(TMP,'\n')
 		Ntot[t]=Ntotd[t]+Ntote[t] #total number of individuals of any type
-		#cat(Ntotd[t])
-		#cat(" ")
-		#cat(Ntot[t])
-		#cat("   ")
-		if((Ntotd[t]/Ntot[t])>.5){ #d is more than half the pop, D is the source, E is the sink
-			#cat("d is more common, D is the source\n")
-			NDd[t]=(Ntotd[t]/Ntot[t])*KD
-			NDe[t]=(Ntote[t]/Ntot[t])*KD
-			NEd[t]=(Ntotd[t]/Ntot[t])*min(KE,(Ntotd[t]+Ntote[t]-KD))
-			NEe[t]=(Ntote[t]/Ntot[t])*min(KE,(Ntotd[t]+Ntote[t]-KD))
-		}else{ #e is more than half the pop, E is the source
-			#cat("e is more common, E is the source\n")
-			NEd[t]=(Ntotd[t]/Ntot[t])*KE
-			NEe[t]=(Ntote[t]/Ntot[t])*KE
-			NDd[t]=(Ntotd[t]/Ntot[t])*min(KD,(Ntotd[t]+Ntote[t]-KE))
-			NDe[t]=(Ntote[t]/Ntot[t])*min(KD,(Ntotd[t]+Ntote[t]-KE))
-		}
+		OUT = Disp(TMP[1],TMP[2],K=size)
+		NDd[t]=OUT[1]
+		NDe[t]=OUT[2]
+		NEd[t]=OUT[3]
+		NEe[t]=OUT[4]
 	}
 	deltad[count]=(Ntotd[numYears]-Ntotd[numYears-1])/Ntot[numYears]
 }
