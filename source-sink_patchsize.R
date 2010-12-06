@@ -1,3 +1,22 @@
+#  Version 0.1 -- Collin Edwards
+
+#Okay, this one looks at changes in the population size of d.  Graph is of deltad in terms of the ratio of the size of the patch for D to the size for the patch for E.
+#
+#Plug in some numbers at the top, run the thing, look at the pretty graph.  When the curve is above 0, there will be a source-sink inversion.
+#If someone remembers how to put a horizonal line on a graph, please put that at the end of the code (with the horizontal line at y=0).
+
+#If you want to make the graph more focused on a smaller region, change the line
+#vectorKD=seq(.01*KE,10*KE,length.out=bins)
+#so that the region is smaller, ie:
+#vectorKD=seq(.01*KE,4*KE,length.out=bins)
+#
+#for reference, 
+#seq(a,b,length.out=c)
+#produces a sequence of numbers from a to b, with a total of c numbers in the sequence.
+
+
+
+
 numYears=5
 
 ###################

@@ -1,3 +1,7 @@
+#  Version 0.1 -- Collin Edwards
+#  It should make a couple of pretty graphs - the one on the left is the total population sizes, the one on the right is the relative proportions of e and d
+#
+
 numYears=1000
 
 ###################
