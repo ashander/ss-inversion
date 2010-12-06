@@ -1,4 +1,8 @@
 Hey, this is a git repository for our project! 
 
+If you have git, you can download it: 
+>git clone git@github.com:ashander/ss-inversion.git
+
+
 Checkout git in 5 mins for how to use:
 http://scottr.org/presentations/git-in-5-minutes/
