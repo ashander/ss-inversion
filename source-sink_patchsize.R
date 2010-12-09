@@ -43,7 +43,7 @@ vectorKD=seq(.01*size$E,5*size$E,length.out=bins)
 ratioK=vectorKD/size$E
 lamMul= c(.9, 1.0, 1.1)
 
-plot(0,0,pch='',xlim=c(0,max(ratioK)),ylim=c(0,2.5), main="",xlab=expression(K[D]/K[E]),ylab=expression(eta[D/E]))
+plot(0,0,pch='',xlim=c(0,max(ratioK)),ylim=c(0,2.5), main="",xlab=expression(K[E]/K[D]),ylab=expression(eta[E/D]))
 for(i in 1:3){
 	lambda$Dd = lamEe*lamMul[i]
 	for(count in 1:bins){
@@ -101,7 +101,7 @@ for(i in 1:3){
 
 	lines(ratioK, eggratio/ratioK, lty=i,lwd=2)
 	}
-legend(0.1,2.5, c(expression(lambda[Dd]/lambda[Ee]== 0.9),expression(lambda[Dd]/lambda[Ee]== 1.0), expression(lambda[Dd]/lambda[Ee]== 1.1)) , lty=1:3, lwd=2, cex=.8, bty='n')
+legend(0.01,2.5, c(expression(lambda[Ed]/lambda[De]== 0.9),expression(lambda[Ed]/lambda[De]== 1.0), expression(lambda[Ed]/lambda[De]== 1.1)) , lty=1:3, lwd=2, cex=.8, bty='n')
 
 abline(h=1, lty=1,col='gray')
 abline(h=0,lty=1)

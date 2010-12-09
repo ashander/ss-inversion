@@ -87,13 +87,13 @@ This gives the following dynamics:
 
 {\em Source} and {\em Sink}: A source is a net exporter, while a sink is a net importer. 
 We define ``net import'' and ``export'' by looking at porpotions of dispersers  relative to avialable habitat. 
-The ratio of dispersers originating from deciduous habitat to those coming from evergreen habitat is
+The ratio of dispersers originating from evergreen habitat to those coming from deciduous habitat is
   \begin{equation}\label{E:rat}
-      \frac{N_{D,d}(t)\lambda_{D,d}+N_{D,e}(t)\lambda_{D,e}}{ N_{E,d}(t)\lambda_{E,d}+ N_{E,e}(t)\lambda_{E,e}}.
+      \frac{ N_{E,d}(t)\lambda_{E,d}+ N_{E,e}(t)\lambda_{E,e}}{N_{D,d}(t)\lambda_{D,d}+N_{D,e}(t)\lambda_{D,e}}.
  \end{equation}
-By comparing this ratio to the ratio of habitat avialble, i.e. $K_D/K_E$, we define the inversion criterion:
+By comparing this ratio to the ratio of habitat avialble, i.e. $K_E/K_D$, we define the inversion criterion:
   \begin{equation}\label{E:invers}
-   \eta_{D/E} := \frac{   \frac{N_{D,d}(t)\lambda_{D,d}+N_{D,e}(t)\lambda_{D,e}}{ N_{E,d}(t)\lambda_{E,d}+ N_{E,e}(t)\lambda_{E,e}}}{\frac{K_D}{K_E}}.
+   \eta_{E/D} := \frac{ \frac{ N_{E,d}(t)\lambda_{E,d}+ N_{E,e}(t)\lambda_{E,e}}{N_{D,d}(t)\lambda_{D,d}+N_{D,e}(t)\lambda_{D,e}}}{\frac {K_E}{K_D}}.
  \end{equation}
 When inversion criterion $\eta_{D/E} > 1$, deciduous habitat is a source. When less than 1, deciduous habitat is a sink.
 

@@ -47,7 +47,7 @@ NEe[1]=INIT[4]
 #############
 #first year is 
 
-plot(c(1,numYears),c(0,7.5),col="transparent", xlab="time",ylab=expression(eta[D/E]))
+plot(c(1,numYears),c(0,7.5),col="transparent", xlab="time",ylab=expression(eta[E/D]))
 lams =c(.5, 3.2, 3.4)
 for(i in 1:3){
 	lambda$Dd=lams[i]*lamEe
@@ -74,7 +74,7 @@ for(t in 2:numYears){
 	etaDE = etaDE[2:length(etaDE)]
 	lines(2:numYears,etaDE, lty=i, lwd=2)
 }
-legend(10,6, c(expression(lambda[Dd]/lambda[Ee]== 0.5),expression(lambda[Dd]/lambda[Ee]== 3.2), expression(lambda[Dd]/lambda[Ee]== 3.4)) , lty=1:3, lwd=2, cex=.8, bty='n')
+legend(10,6, c(expression(lambda[Ee]/lambda[Dd]== 0.5),expression(lambda[Ee]/lambda[Dd]== 3.2), expression(lambda[Ee]/lambda[Dd]== 3.4)) , lty=1:3, lwd=2, cex=.8, bty='n')
 
 abline(h=1, lty=1,col='gray')
 abline(h=0,lty=1)
